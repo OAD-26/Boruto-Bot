@@ -11,11 +11,7 @@ packages = ["nano"]
 
 [deployment]
 run = ["node", "index.js"]
-<<<<<<< HEAD
-deploymentTarget = "vm"
-=======
 deploymentTarget = "autoscale"
->>>>>>> 154b7da2612e70263865b8718cea26a53a8d6e86
 ignorePorts = false
 
 [agent]
