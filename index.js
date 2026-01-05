@@ -64,16 +64,20 @@ async function startBot() {
     sock.ev.on("creds.update", saveCreds);
 
     // QR code handling
-    sock.ev.on("connection.update", (update) => {
+    sock.ev.on("connection.update", async (update) => {
         const { connection, lastDisconnect, qr } = update;
         if (qr) qrcode.generate(qr, { small: true });
         
         if (connection === "close") {
             const reason = lastDisconnect?.error?.output?.statusCode;
             console.log(`❌ Connection closed: ${reason}`);
-            // Reconnect if it's not a logged out reason
-            if (reason !== DisconnectReason.loggedOut) {
-                console.log("♻️ Reconnecting...");
+            
+            const shouldReconnect = reason !== DisconnectReason.loggedOut;
+            console.log(`♻️ Connection lost due to ${reason}. Reconnecting: ${shouldReconnect}`);
+            
+            if (shouldReconnect) {
+                // Exponential backoff or simple delay before reconnecting to prevent loops
+                await delay(5000);
                 startBot();
             } else {
                 console.log("❌ Logged out. Please scan QR again.");
@@ -88,9 +92,21 @@ async function startBot() {
                 try {
                     // Send a simple presence update to keep connection active
                     await sock.sendPresenceUpdate('available');
+                    // Also ping the server to ensure socket is alive
+                    await sock.query({
+                        tag: 'iq',
+                        attrs: {
+                            to: '@s.whatsapp.net',
+                            type: 'get',
+                            xmlns: 'w:p',
+                        },
+                        content: [{ tag: 'ping', attrs: {} }]
+                    });
                     console.log('💓 Heartbeat: Connection active');
                 } catch (err) {
                     console.error('💔 Heartbeat failed:', err);
+                    // If heartbeat fails multiple times, it might be a ghost connection
+                    // Baileys usually handles this, but we log it for safety.
                 }
             }, 10 * 60 * 1000); // Every 10 minutes
         }
