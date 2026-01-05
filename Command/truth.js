@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 
+<<<<<<< HEAD
 async function truthCommand(sock, chatId, message) {
     try {
         const shizokeys = 'shizo';
@@ -21,3 +22,16 @@ async function truthCommand(sock, chatId, message) {
 }
 
 module.exports = { truthCommand };
+=======
+module.exports = async (sock, msg, config) => {
+    const jid = msg.key.remoteJid;
+    try {
+        await sock.sendMessage(jid, { react: { text: '🤔', key: msg.key } });
+        const res = await fetch('https://shizoapi.onrender.com/api/texts/truth?apikey=shizo');
+        const json = await res.json();
+        await sock.sendMessage(jid, { text: `🤔 *TRUTH*:\n\n${json.result}` });
+    } catch (e) {
+        await sock.sendMessage(jid, { text: '❌ Failed to fetch truth.' });
+    }
+};
+>>>>>>> 154b7da2612e70263865b8718cea26a53a8d6e86

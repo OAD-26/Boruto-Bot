@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🐉 Boruto Bot v2.0 - Advanced WhatsApp Assistant
 
 <p align="center">
@@ -74,3 +75,6 @@ Created and maintained by **Oluwafemi Ayo David**. Feel free to fork and submit 
 <p align="center">
   Made with ❤️ for the WhatsApp Community
 </p>
+=======
+
+>>>>>>> 154b7da2612e70263865b8718cea26a53a8d6e86

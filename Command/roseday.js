@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 
+<<<<<<< HEAD
 async function rosedayCommand(sock, chatId, message) {
     try {
         
@@ -21,3 +22,15 @@ async function rosedayCommand(sock, chatId, message) {
 }
 
 module.exports = { rosedayCommand };
+=======
+module.exports = async (sock, msg, config) => {
+    const jid = msg.key.remoteJid;
+    try {
+        const res = await fetch(`https://api.princetechn.com/api/fun/roseday?apikey=prince`);
+        const json = await res.json();
+        await sock.sendMessage(jid, { text: `🌹 *ROSE DAY*:\n\n${json.result}` });
+    } catch (e) {
+        await sock.sendMessage(jid, { text: '❌ Failed to fetch rose day quote.' });
+    }
+};
+>>>>>>> 154b7da2612e70263865b8718cea26a53a8d6e86

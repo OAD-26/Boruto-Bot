@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const fetch = require('node-fetch');
 
 async function simpCommand(sock, chatId, quotedMsg, mentionedJid, sender) {
@@ -62,3 +63,14 @@ async function simpCommand(sock, chatId, quotedMsg, mentionedJid, sender) {
 }
 
 module.exports = { simpCommand }; 
+=======
+module.exports = async (sock, msg, config) => {
+    const jid = msg.key.remoteJid;
+    const mentioned = msg.message?.extendedTextMessage?.contextInfo?.mentionedJid?.[0] || msg.message?.extendedTextMessage?.contextInfo?.participant || msg.key.remoteJid;
+    
+    const pp = await sock.profilePictureUrl(mentioned, 'image').catch(() => 'https://telegra.ph/file/24fa902ead26340f3df2c.png');
+    const url = `https://some-random-api.com/canvas/misc/simpcard?avatar=${encodeURIComponent(pp)}`;
+    
+    await sock.sendMessage(jid, { image: { url }, caption: `*Religion: Simping* @${mentioned.split('@')[0]}`, mentions: [mentioned] }, { quoted: msg });
+};
+>>>>>>> 154b7da2612e70263865b8718cea26a53a8d6e86

@@ -67,6 +67,7 @@ async function startBot() {
     sock.ev.on("connection.update", (update) => {
         const { connection, lastDisconnect, qr } = update;
         if (qr) qrcode.generate(qr, { small: true });
+<<<<<<< HEAD
         
         if (connection === "close") {
             const reason = lastDisconnect?.error?.output?.statusCode;
@@ -94,6 +95,14 @@ async function startBot() {
                 }
             }, 10 * 60 * 1000); // Every 10 minutes
         }
+=======
+        if (connection === "close") {
+            const reason = lastDisconnect?.error?.output?.statusCode;
+            console.log(`❌ Connection closed: ${reason}`);
+            startBot(); // reconnect
+        }
+        if (connection === "open") console.log(`✅ Bot connected and ready!`);
+>>>>>>> 154b7da2612e70263865b8718cea26a53a8d6e86
     });
 
     // ===============================
@@ -250,7 +259,10 @@ async function startBot() {
             "quotes": "./Command/quotes.js",
             "fact": "./Command/fact.js",
             "wikipedia": "./Command/wikipedia.js",
+<<<<<<< HEAD
             "novel": "./Command/novel.js",
+=======
+>>>>>>> 154b7da2612e70263865b8718cea26a53a8d6e86
             "shorten": "./Command/shorten.js",
             "qr": "./Command/qr.js",
             "calc": "./Command/calc.js"
@@ -286,4 +298,8 @@ async function startBot() {
 // ===============================
 // RUN BOT
 // ===============================
+<<<<<<< HEAD
 startBot();
+=======
+startBot();
+>>>>>>> 154b7da2612e70263865b8718cea26a53a8d6e86

@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+<<<<<<< HEAD
 const fetch = require('node-fetch');
 
 const USER_GROUP_DATA = path.join(__dirname, '../data/userGroupData.json');
@@ -431,3 +432,28 @@ module.exports = {
     handleChatbotCommand,
     handleChatbotResponse
 }; 
+=======
+
+module.exports = async (sock, msg, config) => {
+    const jid = msg.key.remoteJid;
+    const sender = msg.key.participant || msg.key.remoteJid;
+    const text = msg.message?.conversation || msg.message?.extendedTextMessage?.text || "";
+    const status = text.split(' ')[1]?.toLowerCase();
+
+    if (!config.ownerNumbers.includes(sender.split('@')[0])) {
+        return sock.sendMessage(jid, { text: '❌ Only owner/admins can use this!' });
+    }
+
+    if (!['on', 'off'].includes(status)) {
+        return sock.sendMessage(jid, { text: `❌ Usage: ${config.prefix}chatbot <on/off>` });
+    }
+
+    const settingsPath = path.join(__dirname, "../data/groupSettings.json");
+    let settings = fs.existsSync(settingsPath) ? JSON.parse(fs.readFileSync(settingsPath)) : {};
+    if (!settings[jid]) settings[jid] = {};
+    settings[jid].chatbot = (status === 'on');
+    fs.writeFileSync(settingsPath, JSON.stringify(settings, null, 2));
+
+    await sock.sendMessage(jid, { text: `✅ Chatbot is now turned *${status.toUpperCase()}* for this group!` });
+};
+>>>>>>> 154b7da2612e70263865b8718cea26a53a8d6e86

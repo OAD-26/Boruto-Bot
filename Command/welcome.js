@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const { handleWelcome } = require('../lib/welcome');
 const { isWelcomeOn, getWelcome } = require('../lib/index');
 const { channelInfo } = require('../lib/messageConfig');
@@ -146,3 +147,25 @@ async function handleJoinEvent(sock, id, participants) {
 }
 
 module.exports = { welcomeCommand, handleJoinEvent };
+=======
+const fs = require("fs");
+const path = require("path");
+
+const welcomerDataFile = path.join(__dirname, "..", "data", "welcomer.json");
+let welcomerData = fs.existsSync(welcomerDataFile)
+  ? JSON.parse(fs.readFileSync(welcomerDataFile))
+  : { groups: {} };
+
+module.exports = {
+  name: "welcome",
+  description: "Send welcome messages with emojis",
+  async execute(sock, participant, groupId) {
+    if (!welcomerData.groups[groupId]?.enabled) return;
+
+    const userName = participant.split("@")[0];
+    const welcomeText = `👋✨ Welcome @${userName} to our group! 🎉\nPlease read the rules 📜 and enjoy your stay 😎`;
+    
+    await sock.sendMessage(groupId, { text: welcomeText, mentions: [participant] });
+  },
+};
+>>>>>>> 154b7da2612e70263865b8718cea26a53a8d6e86
