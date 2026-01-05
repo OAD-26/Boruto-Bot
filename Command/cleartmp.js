@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-<<<<<<< HEAD
 const isOwnerOrSudo = require('../lib/isOwner');
 
 // Function to clear a single directory
@@ -16,29 +15,10 @@ function clearDirectory(dirPath) {
                 const filePath = path.join(dirPath, file);
                 const stat = fs.lstatSync(filePath);
                 if (stat.isDirectory()) {
-=======
-
-module.exports = async (sock, msg, config) => {
-    const jid = msg.key.remoteJid;
-    const sender = msg.key.participant || msg.key.remoteJid;
-    
-    if (!config.ownerNumbers.includes(sender.split('@')[0])) {
-        return sock.sendMessage(jid, { text: '❌ This command is only available for the owner!' });
-    }
-
-    try {
-        const tmpDir = path.join(process.cwd(), 'tmp');
-        if (fs.existsSync(tmpDir)) {
-            const files = fs.readdirSync(tmpDir);
-            for (const file of files) {
-                const filePath = path.join(tmpDir, file);
-                if (fs.lstatSync(filePath).isDirectory()) {
->>>>>>> 154b7da2612e70263865b8718cea26a53a8d6e86
                     fs.rmSync(filePath, { recursive: true, force: true });
                 } else {
                     fs.unlinkSync(filePath);
                 }
-<<<<<<< HEAD
                 deletedCount++;
             } catch (err) {
                 // Only log errors
@@ -123,12 +103,3 @@ function startAutoClear() {
 startAutoClear();
 
 module.exports = clearTmpCommand; 
-=======
-            }
-        }
-        await sock.sendMessage(jid, { text: '✅ Temporary files cleared successfully! 🧹' });
-    } catch (error) {
-        await sock.sendMessage(jid, { text: '❌ Failed to clear temporary files!' });
-    }
-};
->>>>>>> 154b7da2612e70263865b8718cea26a53a8d6e86

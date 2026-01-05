@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const isAdmin = require('../lib/isAdmin');
 const { downloadContentFromMessage } = require('@whiskeysockets/baileys');
 const fs = require('fs');
@@ -87,15 +86,3 @@ async function tagCommand(sock, chatId, senderId, messageText, replyMessage, mes
 }
 
 module.exports = tagCommand;
-=======
-module.exports = async (sock, msg, config) => {
-    const jid = msg.key.remoteJid;
-    if (!jid.endsWith('@g.us')) return sock.sendMessage(jid, { text: '❌ Group only command!' });
-
-    const metadata = await sock.groupMetadata(jid);
-    const participants = metadata.participants;
-    const mentions = participants.map(p => p.id);
-    
-    await sock.sendMessage(jid, { text: `🔊 *ANNOUNCEMENT*\n\nEveryone, please pay attention!`, mentions });
-};
->>>>>>> 154b7da2612e70263865b8718cea26a53a8d6e86

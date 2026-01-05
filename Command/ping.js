@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const os = require('os');
 const settings = require('../settings.js');
 
@@ -46,12 +45,3 @@ async function pingCommand(sock, chatId, message) {
 }
 
 module.exports = pingCommand;
-=======
-module.exports = async (sock, msg, config) => {
-    const jid = msg.key.remoteJid;
-    const start = Date.now();
-    await sock.sendMessage(jid, { text: '🏓 Pong!' }, { quoted: msg });
-    const ping = Date.now() - start;
-    await sock.sendMessage(jid, { text: `🚀 *Ping*: ${ping}ms\n⏱️ *Uptime*: ${process.uptime().toFixed(0)}s` });
-};
->>>>>>> 154b7da2612e70263865b8718cea26a53a8d6e86

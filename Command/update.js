@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 const { exec } = require('child_process');
 const fs = require('fs');
 const path = require('path');
@@ -230,11 +229,3 @@ async function updateCommand(sock, chatId, message, zipOverride) {
 module.exports = updateCommand;
 
 
-=======
-module.exports = async (sock, msg, config) => {
-    const jid = msg.key.remoteJid;
-    const sender = msg.key.participant || msg.key.remoteJid;
-    if (!config.ownerNumbers.includes(sender.split('@')[0])) return sock.sendMessage(jid, { text: '❌ Only owner can use this!' });
-    await sock.sendMessage(jid, { text: '⚡ *Bot update check complete!* Bot is running the latest version. ✅' });
-};
->>>>>>> 154b7da2612e70263865b8718cea26a53a8d6e86
