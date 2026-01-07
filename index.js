@@ -73,6 +73,34 @@ async function startBot() {
     const sock = makeWASocket({
         logger: pino({ level: "silent" }),
         auth: state,
+        browser: ["Boruto Bot", "Desktop", "1.0.0"],
+        syncFullHistory: false,
+        markOnlineOnConnect: true,
+        connectTimeoutMs: 60000,
+        defaultQueryTimeoutMs: 60000,
+        keepAliveIntervalMs: 10000,
+        generateHighQualityLinkPreview: true,
+        patchMessageBeforeSending: (message) => {
+            const requiresPatch = !!(
+                message.buttonsMessage ||
+                message.templateMessage ||
+                message.listMessage
+            );
+            if (requiresPatch) {
+                return {
+                    viewOnceMessage: {
+                        message: {
+                            messageContextInfo: {
+                                deviceListMetadata: {},
+                                deviceListMetadataVersion: 2
+                            },
+                            ...message
+                        }
+                    }
+                };
+            }
+            return message;
+        }
     });
 
     // Save credentials on update
