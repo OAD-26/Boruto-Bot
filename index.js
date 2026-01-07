@@ -78,8 +78,14 @@ async function startBot() {
         markOnlineOnConnect: true,
         connectTimeoutMs: 60000,
         defaultQueryTimeoutMs: 60000,
-        keepAliveIntervalMs: 10000,
+        keepAliveIntervalMs: 30000,
         generateHighQualityLinkPreview: true,
+        shouldSyncHistoryMessage: () => false,
+        getMessage: async (key) => {
+            return {
+                conversation: "Boruto Bot active"
+            }
+        },
         patchMessageBeforeSending: (message) => {
             const requiresPatch = !!(
                 message.buttonsMessage ||
