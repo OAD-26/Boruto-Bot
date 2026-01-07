@@ -76,11 +76,13 @@ async function startBot() {
         browser: ["Boruto Bot", "Desktop", "1.0.0"],
         syncFullHistory: false,
         markOnlineOnConnect: true,
-        connectTimeoutMs: 60000,
-        defaultQueryTimeoutMs: 60000,
-        keepAliveIntervalMs: 30000,
+        connectTimeoutMs: 90000,
+        defaultQueryTimeoutMs: 90000,
+        keepAliveIntervalMs: 20000,
         generateHighQualityLinkPreview: true,
         shouldSyncHistoryMessage: () => false,
+        retryRequestDelayMs: 5000,
+        maxRetries: 5,
         getMessage: async (key) => {
             return {
                 conversation: "Boruto Bot active"
