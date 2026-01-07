@@ -78,7 +78,7 @@ async function startBot() {
         markOnlineOnConnect: true,
         connectTimeoutMs: 90000,
         defaultQueryTimeoutMs: 90000,
-        keepAliveIntervalMs: 20000,
+        keepAliveIntervalMs: 30000,
         generateHighQualityLinkPreview: true,
         shouldSyncHistoryMessage: () => false,
         retryRequestDelayMs: 5000,
@@ -123,17 +123,15 @@ async function startBot() {
             const reason = lastDisconnect?.error?.output?.statusCode;
             console.log(`❌ Connection closed: ${reason}`);
 
-            const shouldReconnect = reason !== DisconnectReason.loggedOut;
-            console.log(
-                `♻️ Connection lost due to ${reason}. Reconnecting: ${shouldReconnect}`,
-            );
+            // Reconnect logic: 401 means logout, others are temporary
+            const shouldReconnect = reason !== DisconnectReason.loggedOut && reason !== 401;
 
             if (shouldReconnect) {
-                // Exponential backoff or simple delay before reconnecting to prevent loops
+                console.log(`♻️ Connection lost due to ${reason}. Reconnecting in 5s...`);
                 await delay(5000);
                 startBot();
             } else {
-                console.log("❌ Logged out. Please scan QR again.");
+                console.log("❌ Logged out or session expired (401). Please scan QR again.");
             }
         }
 
@@ -141,30 +139,22 @@ async function startBot() {
             console.log(`✅ Bot connected and ready!`);
 
             // HEARTBEAT / KEEP-ALIVE
-            setInterval(
-                async () => {
+            if (global.heartbeatInterval) clearInterval(global.heartbeatInterval);
+            global.heartbeatInterval = setInterval(async () => {
+                if (sock.state === 'open') {
                     try {
-                        // Send a simple presence update to keep connection active
-                        await sock.sendPresenceUpdate("available");
-                        // Also ping the server to ensure socket is alive
+                        await sock.sendPresenceUpdate('available');
                         await sock.query({
-                            tag: "iq",
-                            attrs: {
-                                to: "@s.whatsapp.net",
-                                type: "get",
-                                xmlns: "w:p",
-                            },
-                            content: [{ tag: "ping", attrs: {} }],
+                            tag: 'iq',
+                            attrs: { to: '@s.whatsapp.net', type: 'get', xmlns: 'w:p' },
+                            content: [{ tag: 'ping', attrs: {} }]
                         });
-                        console.log("💓 Heartbeat: Connection active");
+                        console.log('💓 Heartbeat: Connection active');
                     } catch (err) {
-                        console.error("💔 Heartbeat failed:", err);
-                        // If heartbeat fails multiple times, it might be a ghost connection
-                        // Baileys usually handles this, but we log it for safety.
+                        console.error('💔 Heartbeat failed:', err.message);
                     }
-                },
-                10 * 60 * 1000,
-            ); // Every 10 minutes
+                }
+            }, 30000);
         }
     });
 
